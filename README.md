@@ -23,7 +23,8 @@ An easy installation of the above packages is available by using [build-deps.sh]
 ```r
 install.packages("devtools")
 library(devtools)
-install_git(url="https://github.com/ecrc/exageostatR")
+Sys.setenv(PKG_CONFIG_PATH=paste(Sys.getenv('PKG_CONFIG_PATH'),paste(.libPaths(),'exageostat/lib/pkgconfig',sep='/',collapse=':'),sep=':'));
+install_git("https://github.com/ecrc/exageostatR")
 library(exageostat)
 ```
 
