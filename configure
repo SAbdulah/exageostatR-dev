@@ -284,6 +284,8 @@ else
         mkdir -p build && cd build
         cmake .. -DCHAMELEON_USE_MPI=$MPIVALUE -DCHAMELEON_USE_CUDA=$CUDAVALUE -DCHAMELEON_ENABLE_EXAMPLE=OFF -DCHAMELEON_ENABLE_TESTING=OFF -DCHAMELEON_ENABLE_TIMING=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$PREFIX   -DBLAS_LIBRARIES="-L${MKLROOT}/lib -Wl,-rpath,${MKLROOT}/lib -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl" -DCBLAS_DIR="${MKLROOT}" -DLAPACKE_DIR="${MKLROOT}" -DBLAS_DIR="${MKLROOT}"
 
+export CPATH=$BASEDIR/src/hicma/chameleon/coreblas/include:$CPATH
+
         make -j $((cpucores-2)) || { echo 'CHAMELEON installation failed' ; exit 1; }
         make install
     else
