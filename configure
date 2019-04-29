@@ -13,6 +13,10 @@ totalcpu=`grep "^processor" /proc/cpuinfo | wc -l` # total ONLINE cpus
 cputhreads=$(( nthreads * nsockets * ncorepersocket ))
 cpucores=$(( nsockets * ncorepersocket ))
 
+
+echo $cpucores
+exit 1;
+
 #VARIABLES
 BASEDIR=$(pwd)
 TMPDIR=$BASEDIR/_$$
