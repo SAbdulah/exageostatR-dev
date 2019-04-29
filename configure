@@ -132,8 +132,6 @@ else
     USE_OPENBLAS='true'
 fi
 
-
-exit 1;
 #set pkgconfig path including possible installation dir
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$SETUP_DIR/lib/pkgconfig
 
