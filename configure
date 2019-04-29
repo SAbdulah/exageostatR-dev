@@ -5,6 +5,14 @@
 #
 #
 
+#Get the number of CPUs
+nthreads=`lscpu | grep "^Thread" | cut -d: -f 2 | tr -d " "`
+nsockets=`grep "^physical id" /proc/cpuinfo | sort | uniq | wc -l`
+ncorepersocket=`grep "^core id" /proc/cpuinfo | sort  | uniq | wc -l`
+totalcpu=`grep "^processor" /proc/cpuinfo | wc -l` # total ONLINE cpus
+cputhreads=$(( nthreads * nsockets * ncorepersocket ))
+cpucores=$(( nsockets * ncorepersocket ))
+
 #VARIABLES
 BASEDIR=$(pwd)
 TMPDIR=$BASEDIR/_$$
@@ -149,7 +157,7 @@ then
             cd $TMPDIR
             wget https://github.com/xianyi/OpenBLAS/archive/v0.3.3.tar.gz -O - | tar -zx
             cd OpenBLAS-0.3.3
-            make -j 1|| make && make install PREFIX=$PREFIX
+            make -j $((cpucores-2))|| make && make install PREFIX=$PREFIX
             export CPATH=$CPATH:$PREFIX/include
         else
             echo "####################"
@@ -175,7 +183,7 @@ else
         wget https://ftp.gnu.org/gnu/gsl/gsl-2.4.tar.gz -O - | tar -zx
         cd gsl-2.4
         ./configure --prefix=$PREFIX
-        make -j 1 || { echo 'GSL installation failed' ; exit 1; }
+        make -j $((cpucores-2)) || { echo 'GSL installation failed' ; exit 1; }
 	make install
     else
         echo "####################"
@@ -200,7 +208,7 @@ else
         wget http://ab-initio.mit.edu/nlopt/nlopt-2.4.2.tar.gz -O - | tar -zx
         cd nlopt-2.4.2
         ./configure --enable-shared --without-guile --prefix=$PREFIX
-        make -j 1 || { echo 'NLOPT installation failed' ; exit 1; }
+        make -j $((cpucores-2)) || { echo 'NLOPT installation failed' ; exit 1; }
         make install
     else
         echo "####################"
@@ -225,7 +233,7 @@ else
         wget https://www.open-mpi.org/software/hwloc/v1.11/downloads/hwloc-1.11.5.tar.gz -O - | tar -zx
         cd hwloc-1.11.5
         ./configure --prefix=$PREFIX
-        make -j 1 || { echo 'HWLOC installation failed' ; exit 1; }
+        make -j $((cpucores-2)) || { echo 'HWLOC installation failed' ; exit 1; }
         make install
     else
         echo "####################"
@@ -254,7 +262,7 @@ else
         else
             ./configure --disable-cuda --disable-opencl --prefix=$PREFIX
         fi
-        make -j 1 || { echo 'STARPU installation failed' ; exit 1; }
+        make -j $((cpucores-2)) || { echo 'STARPU installation failed' ; exit 1; }
         make install
     else
         echo "####################"
@@ -281,7 +289,7 @@ else
         mkdir -p build && cd build
         cmake .. -DCHAMELEON_USE_MPI=$MPIVALUE -DCHAMELEON_USE_CUDA=$CUDAVALUE -DCHAMELEON_ENABLE_EXAMPLE=OFF -DCHAMELEON_ENABLE_TESTING=OFF -DCHAMELEON_ENABLE_TIMING=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$PREFIX   -DBLAS_LIBRARIES="-L${MKLROOT}/lib -Wl,-rpath,${MKLROOT}/lib -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl" -DCBLAS_DIR="${MKLROOT}" -DLAPACKE_DIR="${MKLROOT}"
 
-        make -j 1 || { echo 'CHAMELEON installation failed' ; exit 1; }
+        make -j $((cpucores-2)) || { echo 'CHAMELEON installation failed' ; exit 1; }
         make install
     else
         echo "####################"
@@ -304,8 +312,8 @@ else
         echo "Building STARS-H..."
         cd $BASEDIR/src/stars-h
         mkdir -p build && cd build
-        cmake .. -DCMAKE_C_FLAGS=-fPIC -DEXAMPLES=OFF -DTESTING=OFF -DMPI=$MPIVALUE -DCMAKE_INSTALL_PREFIX=$PREFIX
-        make -j 1 || { echo 'STARS-H installation failed' ; exit 1; }
+        cmake .. -DCMAKE_C_FLAGS=-fPIC -DEXAMPLES=OFF -DTESTING=OFF -DMPI=OFF -DOPENMP=OFF -DSTARPU=OFF -DCMAKE_INSTALL_PREFIX=$PREFIX
+        make -j $((cpucores-2)) || { echo 'STARS-H installation failed' ; exit 1; }
         make install
     else
         echo "####################"
@@ -329,7 +337,7 @@ else
         cd $BASEDIR/src/hicma/
         mkdir -p build && cd build
         cmake .. -DHICMA_USE_MPI=$MPIVALUE -DBUILD_SHARED_LIBS=ON -DHICMA_ENABLE_TESTING=OFF -DHICMA_ENABLE_TIMING=OFF -DCMAKE_INSTALL_PREFIX=$PREFIX  -DBLAS_LIBRARIES="-L${MKLROOT}/lib -Wl,-rpath,${MKLROOT}/lib -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl"  -DCBLAS_DIR="${MKLROOT}" -DLAPACKE_DIR="${MKLROOT}"
-        make -j 1 || { echo 'HICMA installation failed' ; exit 1; }
+        make -j $((cpucores-2)) || { echo 'HICMA installation failed' ; exit 1; }
         make install
     else
         echo "####################"
