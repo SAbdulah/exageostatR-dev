@@ -99,6 +99,7 @@ case "$osType" in
         echo "Running on Mac OSX."
         CURRENT_OS="OSX"
         export DYLD_LIBRARY_PATH=$PREFIX/lib:$DYLD_LIBRARY_PATH
+	source /opt/intel/mkl/bin/mklvars.sh
     } ;;
     "Linux")
     {
