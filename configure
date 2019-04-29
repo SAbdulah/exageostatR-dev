@@ -9,7 +9,7 @@
 cpucores=`getconf _NPROCESSORS_ONLN`
 
 echo $cpucores
-
+exit 1;
 
 
 #VARIABLES
