@@ -6,13 +6,7 @@
 #
 
 #Get the number of CPUs
-nthreads=`lscpu | grep "^Thread" | cut -d: -f 2 | tr -d " "`
-nsockets=`grep "^physical id" /proc/cpuinfo | sort | uniq | wc -l`
-ncorepersocket=`grep "^core id" /proc/cpuinfo | sort  | uniq | wc -l`
-totalcpu=`grep "^processor" /proc/cpuinfo | wc -l` # total ONLINE cpus
-cputhreads=$(( nthreads * nsockets * ncorepersocket ))
-cpucores=$(( nsockets * ncorepersocket ))
-
+cpucores='getconf _NPROCESSORS_ONLN'
 
 echo $cpucores
 exit 1;
