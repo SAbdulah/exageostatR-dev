@@ -103,6 +103,7 @@ case "$osType" in
         CURRENT_OS="OSX"
         export DYLD_LIBRARY_PATH=$PREFIX/lib:$DYLD_LIBRARY_PATH
 	source /opt/intel/mkl/bin/mklvars.sh intel64
+        export DYLD_LIBRARY_PATH=$MKLROOT/lib:$DYLD_LIBRARY_PATH
     } ;;
     "Linux")
     {
