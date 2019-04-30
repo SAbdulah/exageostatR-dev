@@ -325,11 +325,6 @@ else
     fi
 fi
 
-
-echo $MKLROOT
-exit 1;
-
-
 # hicma
 if pkg-config --exists  hicma
 then
